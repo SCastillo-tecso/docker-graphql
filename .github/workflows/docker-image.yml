@@ -36,7 +36,7 @@ jobs:
         # truquito para siempre tener el latest subido
       run: |
         docker build -t acastillosantiago/docker-graphql:0.0.2 .
-        docker build -t acastillosantiago/docker-graphql:latest.
+        docker build -t acastillosantiago/docker-graphql:latest .
 
     - name: Push Docker Image
         # truquito para siempre tener el latest subido
