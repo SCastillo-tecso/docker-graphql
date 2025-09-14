@@ -22,27 +22,40 @@ jobs:
       with:
         # Para que interioricé en la búsqueda de nuestros commits??
         fetch-depth: 0
+        
+    - name: Git Semantic Version
+      uses: PaulHatch/semantic-version@v4.0.3
+      with:
+        major_pattern: "major:"
+        minor_pattern: "feat:"
+        format: "${major}.${minor}.${patch}-prerelease${increment}"
+      id: version
+        
 
     - name: Docker Login
       env:
         # Ya definido en los secrets de GH actions
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        NEW_VERSION: ${{steps.version.outputs.version}}
         # El '|' (caracter de tuberia) indica que cada linea será un comando independiente en la consola
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        
-    - name : Build Docker Image
-        # truquito para siempre tener el latest subido
-      run: |
-        docker build -t acastillosantiago/docker-graphql:0.0.2 .
-        docker build -t acastillosantiago/docker-graphql:latest .
+        echo "New version: $NEW_VERSION !!!"
 
-    - name: Push Docker Image
-        # truquito para siempre tener el latest subido
-      run: |
-        docker push acastillosantiago/docker-graphql:0.0.2
-        docker push acastillosantiago/docker-graphql:latest
+    
+        
+    # - name : Build Docker Image
+    #     # truquito para siempre tener el latest subido
+    #   run: |
+    #     docker build -t acastillosantiago/docker-graphql:0.0.2 .
+    #     docker build -t acastillosantiago/docker-graphql:latest .
+
+    # - name: Push Docker Image
+    #     # truquito para siempre tener el latest subido
+    #   run: |
+    #     docker push acastillosantiago/docker-graphql:0.0.2
+    #     docker push acastillosantiago/docker-graphql:latest
       
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
