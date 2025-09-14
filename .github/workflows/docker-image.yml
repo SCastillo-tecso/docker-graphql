@@ -12,7 +12,29 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # Cada "-" es un paso.
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    # Nombramos el paso uses para que sea humanamente más legible.
+    - name: Checkout code
+      # Toma lo que tenemos en nuestro repositorio
+      uses: actions/checkout@v4
+      # Añadimos una configuración.
+      with:
+        # Para que interioricé en la búsqueda de nuestros commits??
+        fetch-depth: 0
+
+    - name: Docker Login
+      env:
+        # Ya definido en los secrets de GH actions
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        # El '|' (caracter de tuberia) indica que cada linea será un comando independiente en la consola
+      run: |
+        # ejemplo
+        echo 'Iniciando login'
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo 'Fin del login'
+
+      
+    # - name: Build the Docker image
+    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
